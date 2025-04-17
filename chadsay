@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# --- Data ---
+# these are the variables the rest of the script is aware of
+# they are dynamically populated using a bash hack
+CHAD=''              # the ascii art
+HORIZONTAL_OFFSET='' # horizontal space until the right side of his head
+FREE_LINES=''        # vertical space until the bottom of the speech bubble
+# 
+CHAD1='               ⣀⣤⣾⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣦⣀      
+             ⠐⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⡟⣿⣿⣶⣄⡀   
+             ⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣸⣿⣇⣿⣿⣿⣿⣿⣆  
+             ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣻⣿⡄ 
+            ⢸⣿⣿⣿⣿⣿⣿⣿⣿⡿⠍⠙⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⡇ 
+            ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⣱⣾⠟ ⢠⠉⠉⠉⠻⣿⣿⡇  
+            ⣽⣿⣿⣿⣿⣿⡿⠛⣡⣶⣿⣧⣤⠸⡟⠂   ⢹⣿⡇  
+           ⢀⣾⣿⣿⣿⣿⠇ ⢈⣥⣿⣿⣿⣿⣿⣷⣆⢰⣆ ⢸⡏   
+           ⣸⣿⣿⣏⣿⡏ ⣾⣾⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⣷⣾⡃   
+           ⠹⣿⣿⣿⣿⣷⡄⠘⠹⢿⣿⣍⠉⢛⣿⣿⣿⠸⣿⣿⠿⠁   
+            ⢹⢿⣿⣿⣿⣿⣦⣀⣿⣿⣿⣶⣾⣿⣿⣿⡇⠁⠈⡄    
+            ⡟⢺⣿⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟ ⡺⠁   .
+           ⢸ ⢸⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣏⣻⡶⠁  .'\''  
+          ⢀⡿ ⣿⡏⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣬⣿⠇ -'\''    
+⣤⣶⣶⣿⣿⡛⠻⠿⣿⡿⠛⠁⢰⣿⣿⠃⢘⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏           
+⣿⣿⣅⠄⢉⣙⣿⣿⡟   ⠘⣿⡇  ⣿⣦⣿⣿⣿⣿⣿⣿⣿⣟⣻⠇           
+⣿⣿⣿⣿⣿⣿⣿⠇ ⣸ ⡇⢠⣿⣧ ⢠⣿⡿⢿⠿⠋⠙⠛⠛⠛⠛⠋⢀           
+⣿⣿⠏⣸⣿⣿⣿⣧   ⣷⠸⣿⠃⣴⣿⡟⠙⠁     ⣾⣄⣀⡀⠉⠢⣀        
+⣿⣿⣶⣬⣿⣿⣿⣿⣦⡄⣀⡿ ⣿⣿⣇⠹⣷⣤⣾⠇   ⣰⣿⣿⣿⣿⣆ ⠈⠳⡀      
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ ⢰⣿⣿⡿⢶⣿⣿⡟⢀⣤ ⣰⣿⣿⣿⣿⡿⣭⣷⣄⡀⠘⢄     
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⣼⣿⣿⣧⣾⣿⢿⡷⠟⠉ ⠹⠟⠛⢉⠁⡀⠈⠉⠉⠑⢦⡈⠳⡀   
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠙⢿⣿⣿⣿⣿⠉ ⢀⡉⡦⠄    ⣿ ⠠⠄    ⠑⠠⠉⠒⢄⡀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢘⣿⣿⢋⠍⢿⣶⣽⣿⡿⢿⡄  ⣸⡯⡄           ⠙
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣾⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣷⣶⣾⣿⣤⣷⣶⣄⣰⣤⣀⣀⣀⣀⣀⣀⣀⣀'
+HORIZONTAL_OFFSET1=36
+FREE_LINES1=12
+#
+CHAD2='            ⢀⣀⣀⣀⣀⣀⡀            
+        ⢀⣴⣾⣿⣿⣻⡥⢴⣾⠭⠿⢛⣳⣶⣤⣄⣀      
+       ⢠⣿⠟⣉⣵⣫⠴⠚⣩⠤⠖⢋⡩⠞⣩⠞⢋⣽⢷⡄    
+      ⢀⡾⠿⠞⠻⠟⠻⠾⠿⠥⠶⠾⣯⣶⣿⣵⣾⣽⣾⡿⢿    
+      ⡼⠁            ⡏ ⣾⣛⣁⣀⣈⣇   
+     ⢸⠃        ⣠⠤⣄⡀⣰⠃⡼⠁⣀⣤⣤⣈⣽⣇  
+     ⢸        ⢰⣷⣞⣹⣿⡿ ⢷⡾⣿⣿⣿⢛⢻⡋  
+     ⠈⢧       ⢸⣯ ⣿⣿⣧⣄  ⠈⠉⠉ ⠇⢳⡀ 
+      ⠈⠳⣤⣤⣀⣀⣀⣀⣀⣻⣶⡿⢹⣿⣿⣦ ⣀⡀⡴⢂⣀⢀⣧ 
+        ⠈⣇  ⠈⠉⠉⢡⣿⣫⠾⢟⣷⣿⣿⣿⣷⣿⣿⣿⣿  /
+         ⡏     ⢸⡿⢿⣿⠟⣻⣿⢻⣿⣿⣿⣿⡟⠁.`
+        ⡼⠁      ⢿⣽⡏⢘⣏⣹⠿⣿⣿⣧⡿⣿⡄ 
+    ⢀⣠⣶⣾⣷⣶⣦⣄⡀   ⠈⠻⣧⣾⣷⠿⣸⣿⠏⡿⣿⣿⣯ 
+ ⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⡀   ⠨⡟⢾⣿⣹⣼⡗⢻⣷⡿ 
+⠛⠛⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣤⣥⣿⣌⠙⠛⠚⠛⠋  
+      ⠈⠉⠙⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆      
+            ⠈⠙⠛⠻⠿⠿⠿⠿⠿⠿⢿⠇      '
+HORIZONTAL_OFFSET2=31
+FREE_LINES2=9
+#
+CHAD3='                       ⣀⡄
+                 ⣀⣠⠤⠖⠚⠉⡼ 
+            ⢀⣀⠤⠒⠊⠉    ⡸⠁ 
+         ⣀⠴⠚⠉        ⢰⠃  
+      ⣠⠔⠊           ⢠⠏   
+   ⣀⡴⠯⠒⠒⠒⠒⠒⠦⠤⣄⣀⡀    ⡞    
+ ⢀⡼⠁ ⢠⡄      ⣀⣀⠉⠙⢒⡦⢼⠁    
+ ⡼    ⠳⢤   ⠈⠁⣈⣩⣭⡙⣺       
+⢠⡇     ⠘   ⠐⠯⣯⣿⣼⠝⠘⢆      
+⠘⡇   ⡤⣤⣄          ⠈⢣⡀    
+ ⢷  ⢸⢰⠛⠼ ⣤          ⠳⣄   
+ ⢸⣆ ⠘⣌⡽⠃⣰⡏       ⠞⣉⡁ ⣸⡆  
+ ⣸⠈⠂ ⡤ ⢰⡋         ⠷⣍⠉⠁   
+ ⡟   ⡇  ⠳⢄⡀     ⡿⠤⠤⢬⠇  -*
+ ⡇   ⢷⡀   ⠘      ⠑⢲⠞     
+ ⡇    ⠉⠑⠲⠤⣀⡀      ⠈⠑⠢⡀   
+⢰⠇    ⡇    ⣹⠋⠓⠦⣄   ⣀⣠⠇   
+⠸⠆  ⢀ ⠙⢦⡀ ⢰⠋   ⠈⠉⠉⠉⠉     
+      ⠑⠂⠙⠂⢚              '
+HORIZONTAL_OFFSET3=25
+FREE_LINES3=14
+#
+CHAD4='             ⢀⣤⠶⠛⠛⠛⠉⠛⠛⠷⠶⠶⣦⣀       
+           ⢀⠞⠋            ⠉⠻⣄     
+          ⡰⠁     ⢀⣴⣶⣤⣤⣤⣀ ⣀⣀⡀⠸⣧    
+         ⢰⠁     ⣠⣿⣿⣿⣿⣿⢿⡿⠂⠈⠹⢿⣦⠘⣧   
+         ⡎     ⠈⣉⣴⣿⣿⠟⠛⠛⠶⠶ ⣦ ⣿⡇⢹⡇  
+         ⡇     ⣾⣿⣿⣋⢠⠄     ⠉ ⠙⢿⠸⣿  
+         ⡗⣠⢀⣄ ⣼⣿⣿⣿⣄⡀     ⣰⡆   ⡀⢸  
+        ⢸ ⠃⠈⢉ ⠻⣿⣿⣿⣿⣿⡶   ⢀⣿⣇  ⢀⠈⣼  
+        ⠸⡄⢀⠙⡿  ⠻⢿⠿⠏⣁⣤⠄  ⠠⠍⢿⡇⢀⢠⣆⢹  
+         ⠹⡏⣡⠁ ⢤    ⠏⠁        ⢸⡏⢸  
+          ⣧⣿ ⢂⡀          ⡀⣀⠲ ⠘⢰⡟  
+          ⢹⣿ ⠈        ⠈⠑⠂ ⠈⠦ ⢀⡿   /
+          ⢸⣿⣦⡀            ⢠⠆⢀⣸⠇ -'\''
+         ⣴⣿⣿⣿⣿⣷⣤⡀           ⢘⠙⣧
+       ⣠⡟⢹⣿⣿⣿⣿⣿⣿⣿⣶⣄  ⠁      ⢉⣰⠇
+ ⣀⣀⠤⠖⠛⢋⣡⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣥   ⣀ ⢀⣀⣠⡼
+⣉⣥⣶⣶⣿⡿⢋⣽⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⡿  ⣾⣿⢸⠟
+⣿⣿⣿⠟⠋⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⣿⣿⠁ ⣴⣿⡟⢸⡀
+⠈⠉   ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ ⠹⠃ ⣾⡟⣼⣷⣬⣙⠳⢤⣀
+⣀⣀⣀⣀⣀⡈⠙⠛⠛⠛⠙⠻⠿⠿⣿⡿  ⣄ ⠏⣄⣿⣇⠘⢿⣿⣶⣌⠳⣄
+⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣦⣤⣀⠙⠃⢰⡄  ⣸⣿⣾⣿⣄ ⣦⠉⠻⣷⣌⠳⢦⣄⣀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⠯⣿⣿⣿⣷⣌⢧ ⢠⠿⢟⣀⣉⣭⣠⣬⣿⣆⢻⡋⠓⠲⠮⣝⡛⢷⣤⣀⣀⡀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡿⠿⣯⣍⣛⣾⡧⠟ ⠈⠙⣿⣿⣿⣿⣿⣿⣦⡀ ⠰⣶⣶⣽⣶⣶⣬⣭⣙⠻⢦⡀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⣿⣿⣿⣷  ⠈⠐⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⡙⠈⢿⣿⣿⣿⣿⣿⣿⣶⣍⠳⣄'
+HORIZONTAL_OFFSET4=34
+FREE_LINES4=11
+#
+function setup_random_chad() {
+    N_CHADS=4
+    N=$(expr ${RANDOM} % ${N_CHADS} + 1)
+    CHAD="CHAD${N}"
+    CHAD="${!CHAD}"
+    HORIZONTAL_OFFSET="HORIZONTAL_OFFSET${N}"
+    HORIZONTAL_OFFSET="${!HORIZONTAL_OFFSET}"
+    FREE_LINES="FREE_LINES${N}"
+    FREE_LINES="${!FREE_LINES}"
+}
+# --- Code ---
+
+# Cli
+function usage() {
+    echo "Usage: chadsay <text>"
+}
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+# Get configuration
+setup_random_chad
+
+# Format message
+message="$*"
+IFS=$'\n' read -rd '' -a lines <<<"$message"
+
+max_len=0 # we will be padding each line to the same lenght to aling the border
+for line in "${lines[@]}"; do
+    [ ${#line} -gt $max_len ] && max_len=${#line}
+done
+
+#   top border
+message="."$(printf '%.0s`' $(seq 1 $((max_len + 2))))".\n"
+#   side borders
+for line in "${lines[@]}"; do
+    padded_line=$(printf "%-${max_len}s" "$line")
+    message+=": $padded_line :\n"
+done
+#   bottom border
+message+="\`"$(printf '%.0s.' $(seq 1 $((max_len + 2))))"\`\n"
+
+message_height=$(expr ${#lines[@]} + 2)
+
+# Normalize chad and message height
+if [ $message_height -gt $FREE_LINES ]; then
+    pad_chad=""
+    n=$((message_height - $FREE_LINES))
+    padding=$(printf "%${HORIZONTAL_OFFSET}s")
+    for _ in $(seq 1 $n); do
+        pad_chad+="${padding}\n"
+    done
+    CHAD="${pad_chad}${CHAD}"
+elif [ $FREE_LINES -gt $message_height ]; then
+    n=$(expr $FREE_LINES - $message_height)
+    for _ in $(seq 1 $n); do
+        message="\n$message"
+    done
+fi
+
+# Paste next to each other
+paste -d '' <(echo -e "$CHAD") <(echo -e "$message")
