@@ -166,4 +166,4 @@ elif [ $FREE_LINES -gt $message_height ]; then
 fi
 
 # Paste next to each other
-paste -d '' <(echo -e "$CHAD") <(echo -e "$message")
+paste -d '\0' <(echo -e "$CHAD") <(echo -e "$message")
