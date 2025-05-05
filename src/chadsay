@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# Config arrays
+HORIZONTAL_OFFSETS=(36 31 25 30 34 50 30 30 30)
+FREE_LINES=(12 9 14 30 12 18 15 15 15)
+
+
+# Load ASCII arts into array
+read_ascii_file() {
+    local file="$1"
+    mapfile -t CHADS < <(awk -v RS='---CHAD---' '{gsub(/^\n+|\n+$/, ""); if (NF) print}' "$file")
+}
+
+colorize() {
+    local color_code="$1"
+    shift
+    local content="$*"
+    echo -e "$(tput setaf $color_code)$content$(tput sgr0)"
+}
+
+function setup_random_chad() {
+    local n_chads=9
+    local n=$((RANDOM % n_chads))
+
+    CHAD=$(awk -v idx=$((n + 1)) '
+        BEGIN { chad_index = 0; printing = 0 }
+        /^--CHAD--$/ {
+            chad_index++
+            printing = (chad_index == idx) ? 1 : 0
+            next
+        }
+        {
+            if (printing) print
+        }
+    ' ascii.txt)
+
+    HORIZONTAL_OFFSET=${HORIZONTAL_OFFSETS[$n]}
+    FREE_LINES=${FREE_LINES[$n]}
+}
+
+
+print_usage() {
+    echo "Usage: chadsay <text>"
+}
+
+build_message_box() {
+    local lines=()
+    IFS=$'\n' read -rd '' -a lines <<<"$1"
+
+    local max_len=0
+    for line in "${lines[@]}"; do
+        (( ${#line} > max_len )) && max_len=${#line}
+    done
+
+    local box=""
+    box+="."$(printf '%.0s`' $(seq 1 $((max_len + 2))))".\n"
+    for line in "${lines[@]}"; do
+        padded=$(printf "%-${max_len}s" "$line")
+        box+=": $padded :\n"
+    done
+    box+="\`"$(printf '%.0s.' $(seq 1 $((max_len + 2))))"\`\n"
+    echo -e "$box"
+}
+
+pad_top() {
+    local n=$1
+    local offset=$2
+    local padding=$(printf "%${offset}s")
+    local out=""
+    for _ in $(seq 1 $n); do
+        out+="${padding}\n"
+    done
+    echo -e "$out"
+}
+
+# --- Main Logic ---
+if [ $# -lt 1 ]; then
+    print_usage
+    exit 1
+fi
+
+ascii_path="$(dirname "$0")/ascii.txt"
+read_ascii_file "$ascii_path"
+setup_random_chad
+
+message="$*"
+message_box=$(build_message_box "$message")
+msg_lines=$(( $(echo -e "$message_box" | wc -l) ))
+chad_lines=$FREE_LINES
+
+# Pad CHAD or message depending on height difference
+if [ -n "$msg_lines" ] && [ -n "$chad_lines" ]; then
+    if [ "$msg_lines" -gt "$chad_lines" ]; then
+        pad=$(pad_top $((msg_lines - chad_lines)) "$HORIZONTAL_OFFSET")
+        CHAD="${pad}${CHAD}"
+    elif [ "$chad_lines" -gt "$msg_lines" ]; then
+        pad=$(pad_top $((chad_lines - msg_lines)) 0)
+        message_box="${pad}${message_box}"
+    fi
+fi
+
+
+# Colorize and paste
+CHAD_COLORED=$(colorize $((RANDOM % 7 + 1)) "$CHAD")
+paste -d '\0' <(echo -e "$CHAD_COLORED") <(echo -e "$message_box")
