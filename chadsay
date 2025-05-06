@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # --- Data ---
+N_CHADS=5
 # these are the variables the rest of the script is aware of
 # they are dynamically populated using a bash hack
 CHAD=''              # the ascii art
@@ -104,7 +105,6 @@ HORIZONTAL_OFFSET4=34
 FREE_LINES4=11
 #
 function setup_random_chad() {
-    N_CHADS=4
     N=$(expr ${RANDOM} % ${N_CHADS} + 1)
     CHAD="CHAD${N}"
     CHAD="${!CHAD}"
