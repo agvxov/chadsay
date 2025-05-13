@@ -146,18 +146,28 @@ function setup_random_chad() {
 # Cli
 function usage() {
     echo "Usage: chadsay <text>"
+    echo "       echo 'text' | chadsay"
 }
 
-if [ $# -lt 1 ]; then
-    usage
-    exit 1
+
+# Read piped input if no arguments are passed
+if [ $# -eq 0 ]; then
+    if [ -t 0 ]; then
+        # No stdin either
+        usage
+        exit 1
+    else
+        # Read from stdin
+        message=$(cat)
+    fi
+else
+    message="$*"
 fi
 
 # Get configuration
 setup_random_chad
 
 # Format message
-message="$*"
 IFS=$'\n' read -rd '' -a lines <<<"$message"
 
 max_len=0 # we will be padding each line to the same lenght to aling the border
